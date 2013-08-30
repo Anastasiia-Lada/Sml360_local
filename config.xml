@@ -5,7 +5,7 @@
         version   = "1.0.0">
 
 	<name>Smiley360</name>
-	<description> </description> 
+	<description>Smiley360</description> 
 	<!-- Customize your app and platform with the preference element. -->
 	<preference name="orientation"                value="default" />
 	<!-- all: default means both landscape and portrait are enabled -->
