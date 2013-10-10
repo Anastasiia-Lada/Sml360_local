@@ -26,6 +26,7 @@ Ext.define('smiley360.view.Main', {
                 align: 'left',
                 cls: 'toolbar-btn-size toolbar-btn-back-size',
                 iconCls: 'back-btn',
+				width: '3em',
                 iconMask: true,
                 hidden: true,
                 listeners: {
@@ -40,6 +41,9 @@ Ext.define('smiley360.view.Main', {
                 ui: 'plain',
                 align: 'right',
                 cls: 'toolbar-btn-size toolbar-btn-menu-size',
+                width: '4em',
+                padding: '0em 0em 0em 1em',
+				margin: '0em',
                 iconCls: 'menu-btn',
                 iconMask: true,
                 listeners: {
@@ -184,6 +188,7 @@ Ext.define('smiley360.view.Main', {
         Ext.Animator.run({
             element: xSidePanel.element,
             easing: 'ease-out',
+            duration: 500,
             preserveEndState: true,
             from: { left: currentTabWidth },
             to: { left: currentTabWidth - panelWidth },

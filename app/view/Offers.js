@@ -271,6 +271,7 @@ Ext.define('smiley360.view.Offers', {
 			var allContainer = new Ext.Container({
 				id: 'OfferID_pane' + oneItem.missionID,
 				cls: 'offers-offer-panel',
+				survey_link: oneItem.survey_link,
 				listeners: {
 					element: 'element',
 					tap: function () {
@@ -280,7 +281,8 @@ Ext.define('smiley360.view.Offers', {
 							this.up('#xOfferView').fireEvent('LoadOfferDetailsCommand', this, this.getId().substr(12));
 						}
 						else {
-							this.up('#xOfferView').fireEvent('LoadOfferSurveyCommand', this, this.getId().substr(12));
+							if (this.config.survey_link)
+								this.up('#xOfferView').fireEvent('LoadOfferSurveyCommand', this, this.getId().substr(12), this.config.survey_link);
 						}
 					}
 				}
@@ -320,8 +322,7 @@ Ext.define('smiley360.view.Offers', {
 			domContainer.appendChild(descTag);
 
 			var xOfferList = this.down('#xOfferList' + oneItem.mission_categoryID);
-			if (xOfferList)
-			{
+			if (xOfferList) {
 				//xOfferList.removeAll(true, true);
 				xOfferList.add(allContainer);
 				this.down('#xOfferListHeader' + oneItem.mission_categoryID).setCls('heading-text active-sign');
@@ -333,4 +334,5 @@ Ext.define('smiley360.view.Offers', {
 			smiley360.memberData.isProfileComplete.complete = 'user is already informed'
 		}
 	},
+
 });

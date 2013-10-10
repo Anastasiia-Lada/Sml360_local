@@ -1,28 +1,31 @@
 ﻿Ext.define('smiley360.view.Tutorial', {
-    extend: 'Ext.Panel',
-    alias: 'widget.tutorialiew',
-    config: {
-        id: 'xTutorialView',
-        layout: 'fit',
-        fullscreen: true,
-        items: [{
-            xtype: 'image',
-            id: 'xTutorialImage',
-            //centered: true,
-            src: 'resources/images/mobie_tutorial_1.png',
-            style: 'background-size: 100% auto;',
-            currentImageIndex: 1,
-            listeners: {
+	extend: 'Ext.Panel',
+	alias: 'widget.tutorialiew',
+	config: {
+		id: 'xTutorialView',
+		layout: 'fit',
+		fullscreen: true,
+		items: [{
+			xtype: 'image',
+			id: 'xTutorialImage',
+			//centered: true,
+			src: 'resources/images/mobie_tutorial_1.png',
+			style: 'background-size: 100% auto;',
+			currentImageIndex: 1,
+			listeners: {
+				element: 'element',
                 tap: function () {
-                    if (++this.currentImageIndex > 7){
+                	if (this.config.currentImageIndex > 7) {
+                		this.config.currentImageIndex = 1;
                         smiley360.animateViewLeft('mainview');
-                        Ext.getCmp('xMainView').hideSidePanel();
+                        Ext.getCmp('xMainView').hideSidePanel();                        
                     }
                     else {
-                        var imageScr = Ext.String.format(
-                            'resources/images/mobie_tutorial_{0}.png', this.currentImageIndex)
+                    	var imageScr = Ext.String.format(
+                            'resources/images/mobie_tutorial_{0}.png', this.config.currentImageIndex);
 
-                        this.setSrc(imageScr)
+                    	this.setSrc(imageScr);
+                    	this.config.currentImageIndex += 1;
                     }
                 }
             }

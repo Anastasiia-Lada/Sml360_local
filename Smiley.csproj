@@ -62,12 +62,15 @@
     <Content Include=".sencha\workspace\plugin.xml" />
     <Content Include="app.js" />
     <Content Include="app\controller\Index.js" />
+    <Content Include="app\controller\Share.js" />
+    <Content Include="app\model\ShareTool.js" />
     <Content Include="app\model\UrlModel.js" />
     <Content Include="app\model\Member.js" />
     <Content Include="app\model\SignupModel.js" />
     <Content Include="app\services\Configuration.js" />
     <Content Include="app\services\Services.js" />
     <Content Include="app\services\Services.mock.js" />
+    <Content Include="app\store\ShareTools.js" />
     <Content Include="app\store\Members.js" />
     <Content Include="app\view\Browse.js" />
     <Content Include="app\view\Connect.js" />
@@ -111,10 +114,13 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="index.html" />
+    <Content Include="jquery-2.0.3.js" />
+    <Content Include="plupload.full.min.js" />
     <Content Include="resources\css\app.css" />
     <Content Include="resources\css\level.css" />
     <Content Include="resources\css\rating.css" />
     <Content Include="resources\css\smiley.css" />
+    <Content Include="resources\htmls\termsContent_mobile.html" />
     <Content Include="resources\icons\Icon%402x.png" />
     <Content Include="resources\icons\icon-spot~ipad.png" />
     <Content Include="resources\icons\Icon.png" />
@@ -193,10 +199,13 @@
     <Content Include="resources\images\hobbies_c.png" />
     <Content Include="resources\images\home smiley.png" />
     <Content Include="resources\images\home_c.png" />
+    <Content Include="resources\images\iphone4LoadingImage.PNG" />
+    <Content Include="resources\images\iPhone5LoadingImage.PNG" />
     <Content Include="resources\images\joanna_photo.png" />
     <Content Include="resources\images\lays.png" />
     <Content Include="resources\images\left-btn.png" />
-    <Content Include="resources\images\loadingimage-r2.jpg" />
+    <Content Include="resources\images\loadingimage-r2.png" />
+    <Content Include="resources\images\loadingimage_x1_iphone.png" />
     <Content Include="resources\images\lock.png" />
     <Content Include="resources\images\login-bg.png" />
     <Content Include="resources\images\login-btn.png" />
@@ -294,6 +303,7 @@
     <Content Include="resources\startup\640x920.png" />
     <Content Include="resources\startup\748x1024.png" />
     <Content Include="resources\startup\768x1004.png" />
+    <Content Include="src\canvas-to-blob.min.js" />
     <Content Include="src\ux\ShareButton.js" />
     <Content Include="src\ux\Fileup.js" />
     <Content Include="test.html" />
@@ -1344,9 +1354,11 @@
     <Content Include="touch\resources\themes\vendor\compass-recipes\tests\recipes\ui\webfont-icons\s.scss" />
     <Content Include="touch\resources\themes\vendor\compass-recipes\tests\_tests.scss" />
     <Content Include="touch\resources\themes\vendor\compass-recipes\VERSION" />
+    <Content Include="dump.php" />
     <None Include="Properties\PublishProfiles\Viktor.pubxml" />
     <None Include="Properties\PublishProfiles\Nastya.pubxml" />
     <Content Include="resources\css\fileup.css" />
+    <Content Include="upload.php" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1373,7 +1385,7 @@
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerPort>29021</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:25453/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>

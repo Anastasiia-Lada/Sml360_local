@@ -3,6 +3,15 @@ smiley360.services = smiley360.services || {};
 var mask = false;
 
 
+smiley360.services.guid = function () {
+	return smiley360.services.s4() + smiley360.services.s4() + '-' + smiley360.services.s4() + '-' + smiley360.services.s4() + '-' + smiley360.services.s4() + '-' + smiley360.services.s4() + smiley360.services.s4() + smiley360.services.s4();
+
+}
+
+smiley360.services.s4 = function () {
+	return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+}
+
 smiley360.services.authenticateservice = function (login, password, deviceId, onCompleted) {
 	smiley360.services.ajax(
 		"authenticate",
@@ -53,82 +62,94 @@ smiley360.services.sendMessage = function (messageData, onCompleted) {
 smiley360.services.getMemberData = function (memberId, onCompleted) {
 	var memberRequest = { memberID: memberId };
 	var globalResponse = { UserId: memberId };
-
+	var success_counter = 0;
 	smiley360.services.ajax("getProfile", memberRequest,
         function (response) {
         	if (!response.success) { onCompleted(response) }
         	else { delete response.success; }
-
+        	success_counter++;
         	globalResponse.Profile = response;
-
-        	smiley360.services.ajax("get_member_level", memberRequest,
-                function (response) {
-                	if (!response.success) { onCompleted(response) }
-                	else { delete response.success; }
-
-                	globalResponse.UserLevel = response.level;
-
-                	smiley360.services.ajax("getWhatsHappening", memberRequest,
-                        function (response) {
-                        	if (!response.success) { onCompleted(response) }
-                        	else { delete response.success; }
-
-                        	globalResponse.WhatsHappening = response;
-
-                        	smiley360.services.ajax("getSpecialOffers", memberRequest,
-                                function (response) {
-                                	if (!response.success) { onCompleted(response) }
-                                	else { delete response.success; }
-
-                                	globalResponse.SpecialOffers = response;
-
-                                	smiley360.services.ajax("getOffers", memberRequest,
-										function (response) {
-											if (!response.success) { onCompleted(response) }
-											else { delete response.success; }
-
-											globalResponse.Offers = response;
-
-											smiley360.services.ajax("getMissionList", memberRequest,
-												function (response) {
-													if (!response.success) { onCompleted(response) }
-													else { delete response.success; }
-
-													globalResponse.MissionList = response;
-
-													smiley360.services.ajax("isProfileComplete", memberRequest,
-														function (response) {
-															if (!response.success) { onCompleted(response) }
-															else { delete response.success; }
-
-															globalResponse.isProfileComplete = response;
-															globalResponse.specialOffersBrands = [];
-															for (var key in globalResponse.SpecialOffers) {
-																smiley360.services.ajax("get_smileyConnect_details",
-																{
-																	memberID: memberId,
-																	brandID: globalResponse.SpecialOffers[key].brandID
-																},
-																function (response) {
-																	if (!response.success) { onCompleted(response) }
-																	else { delete response.success; }
-
-																	globalResponse.specialOffersBrands.push(response);
-																	//alert(response.smileyConnect_detailsImage_URL);
-																	globalResponse.success = true;
-																	onCompleted(globalResponse);
-																});
-
-															};
-
-
-														});
-												});
-										});
-                                });
-                        });
-                });
+        	if (success_counter == 7) {
+        		globalResponse.success = true;
+        		onCompleted(globalResponse);
+        	}
         });
+
+	smiley360.services.ajax("getWhatsHappening", memberRequest,
+        function (response) {
+        	if (!response.success) { onCompleted(response) }
+        	else { delete response.success; }
+        	success_counter++;
+        	globalResponse.WhatsHappening = response;
+        	if (success_counter == 7) {
+        		globalResponse.success = true;
+        		onCompleted(globalResponse);
+        	}
+        });
+
+	smiley360.services.ajax("get_member_level", memberRequest,
+        function (response) {
+        	if (!response.success) { onCompleted(response) }
+        	else { delete response.success; }
+        	success_counter++;
+        	globalResponse.UserLevel = response.level;
+        	if (success_counter == 7) {
+        		globalResponse.success = true;
+        		onCompleted(globalResponse);
+        	}
+        });
+
+	smiley360.services.ajax("getSpecialOffers", memberRequest,
+        function (response) {
+        	if (!response.success) { onCompleted(response) }
+        	else { delete response.success; }
+        	success_counter++;
+        	globalResponse.SpecialOffers = response;
+        	if (success_counter == 7) {
+        		globalResponse.success = true;
+        		onCompleted(globalResponse);
+        	}
+        });
+
+	smiley360.services.ajax("getOffers", memberRequest,
+		function (response) {
+			if (!response.success) { onCompleted(response) }
+			else { delete response.success; }
+			success_counter++;
+			globalResponse.Offers = response;
+			if (success_counter == 7) {
+				globalResponse.success = true;
+				onCompleted(globalResponse);
+			}
+
+		});
+
+
+	smiley360.services.ajax("getMissionList", memberRequest,
+		function (response) {
+			if (!response.success) { onCompleted(response) }
+			else { delete response.success; }
+			success_counter++;
+			globalResponse.MissionList = response;
+			if (success_counter == 7) {
+				globalResponse.success = true;
+				onCompleted(globalResponse);
+			}
+
+		});
+	smiley360.services.ajax("isProfileComplete", memberRequest,
+		function (response) {
+			if (!response.success) { onCompleted(response) }
+			else { delete response.success; }
+			success_counter++;
+			globalResponse.isProfileComplete = response;
+			if (success_counter == 7) {
+				globalResponse.success = true;
+				onCompleted(globalResponse);
+			}
+			
+		});
+	
 }
 
 smiley360.services.updateMemberData = function (memberId, onCompleted) {
@@ -197,7 +218,15 @@ smiley360.services.getMissionSharingToolDetails = function (missionID, memberID,
 			onCompleted
 		);
 }
-
+smiley360.services.checkfacebookpermissions = function (memberID, onCompleted) {
+	smiley360.services.ajax(
+		"checkfacebookpermissions",
+		{
+			memberID: memberID
+		},
+			onCompleted
+		);
+}
 
 smiley360.services.getConnectBrand = function (memberID, brandID, start, howmany, onCompleted) {
 	var brandResponse = { BrandId: brandID };
@@ -384,7 +413,7 @@ smiley360.services.createComment = function (commentData, onCompleted) {
         	brandID: commentData.brandID,
         	text: commentData.text,
         	rating: commentData.rating,
-        	imageID: 23,//commentData.imageID,
+        	imageID: commentData.imageID,
         },
         onCompleted);
 }
@@ -412,81 +441,89 @@ smiley360.services.getProfileDropdowns = function (onCompleted) {
 			else { delete response.success; }
 
 			dropdownValues.gender = response;
-			smiley360.services.ajax(
-				"get_country_options",
-				{
-				},
-				function (response) {
-					if (!response.success) { onCompleted(response) }
-					else { delete response.success; }
+		});
+	smiley360.services.ajax(
+		"get_country_options",
+		{
+		},
+		function (response) {
+			if (!response.success) { onCompleted(response) }
+			else { delete response.success; }
 
-					dropdownValues.country = response;
-					smiley360.services.ajax(
-						"get_marriageStatus_options",
-						{
-						},
-						function (response) {
-							if (!response.success) { onCompleted(response) }
-							else { delete response.success; }
+			dropdownValues.country = response;
 
-							dropdownValues.marital = response;
+		});
+	smiley360.services.ajax(
+		"get_marriageStatus_options",
+		{
+		},
+		function (response) {
+			if (!response.success) { onCompleted(response) }
+			else { delete response.success; }
 
-							smiley360.services.ajax(
-								"get_haveChildren_options",
-								{
-								},
-								function (response) {
-									if (!response.success) { onCompleted(response) }
-									else { delete response.success; }
+			dropdownValues.marital = response;
+		});
 
-									dropdownValues.children = response;
-									smiley360.services.ajax(
-										"get_numberChildren_options",
-										{
-										},
-										function (response) {
-											if (!response.success) { onCompleted(response) }
-											else { delete response.success; }
+	smiley360.services.ajax(
+		"get_haveChildren_options",
+		{
+		},
+		function (response) {
+			if (!response.success) { onCompleted(response) }
+			else { delete response.success; }
 
-											dropdownValues.howmanychildren = response;
-											smiley360.services.ajax(
-												"get_householdIncome_options",
-												{
-												},
-												function (response) {
-													if (!response.success) { onCompleted(response) }
-													else { delete response.success; }
+			dropdownValues.children = response;
 
-													dropdownValues.income = response;
-													smiley360.services.ajax(
-														"get_raceEthnicity_options",
-														{
-														},
-														function (response) {
-															if (!response.success) { onCompleted(response) }
-															else { delete response.success; }
+		});
+	smiley360.services.ajax(
+		"get_numberChildren_options",
+		{
+		},
+		function (response) {
+			if (!response.success) { onCompleted(response) }
+			else { delete response.success; }
 
-															dropdownValues.race = response;
-															smiley360.services.ajax(
-																"get_state_options",
-																{
-																},
-																function (response) {
-																	if (!response.success) { onCompleted(response) }
-																	else { delete response.success; }
+			dropdownValues.howmanychildren = response;
 
-																	dropdownValues.stateID = response;
+		});
 
-																	dropdownValues.success = true;
+	smiley360.services.ajax(
+		"get_householdIncome_options",
+		{
+		},
+		function (response) {
+			if (!response.success) { onCompleted(response) }
+			else { delete response.success; }
 
-																	onCompleted(dropdownValues);
-																});
-														});
-												});
-										});
-								});
-						});
-				});
+			dropdownValues.income = response;
+
+		});
+
+	smiley360.services.ajax(
+		"get_raceEthnicity_options",
+		{
+		},
+		function (response) {
+			if (!response.success) { onCompleted(response) }
+			else { delete response.success; }
+
+			dropdownValues.race = response;
+
+		});
+
+	smiley360.services.ajax(
+		"get_state_options",
+		{
+		},
+		function (response) {
+			if (!response.success) { onCompleted(response) }
+			else { delete response.success; }
+
+			dropdownValues.stateID = response;
+
+			dropdownValues.success = true;
+
+			onCompleted(dropdownValues);
 		});
 }
 
@@ -695,6 +732,7 @@ smiley360.services.postToTwitter = function (postData, onCompleted) {
         	missionID: postData.missionID,
         	memberID: postData.memberID,
         	text: postData.text,
+        	imageID: postData.imageID
         },
         onCompleted);
 }
@@ -708,6 +746,7 @@ smiley360.services.postToFacebook = function (postData, onCompleted) {
         	text: postData.text,
         	rating: postData.rating,
         	postOptionIDs: postData.postOptionIDs,
+        	imageID: postData.imageID
         },
         onCompleted);
 }
@@ -749,6 +788,17 @@ smiley360.services.postToFace2face = function (postData, onCompleted) {
         },
         onCompleted);
 }
+smiley360.services.loginToServer = function (postData, onCompleted) {
+	alert('login to server');
+	smiley360.services.ajax(
+        "facebookSignIn",
+        {
+        	facebookID: postData.facebookID,
+        	guid: postData.guid,
+        	fbtoken: postData.fbtoken
+        },
+        onCompleted);
+}
 
 /***************** Helper Members *****************/
 function delayedUnMask() {
@@ -756,7 +806,7 @@ function delayedUnMask() {
 		if (mask == false) {
 			Ext.Viewport.setMasked(false);
 		}
-	}, 3500);
+	}, 1000);
 }
 
 smiley360.services.ajax = function (method, params, onCompleted) {
@@ -769,7 +819,7 @@ smiley360.services.ajax = function (method, params, onCompleted) {
 		if (noSpecialLoadMethods[method_key] == method)
 			preventLoadIndicator = true;
 
-	if (isLoadedApp && !preventLoadIndicator)
+	if (isLoadedApp && !preventLoadIndicator && !smiley360.preventLoadIndicator)
 		if (!Ext.Viewport.getMasked() || Ext.Viewport.getMasked()) {
 			Ext.Viewport.setMasked({ xtype: 'loadmask', indicator: true, message: 'We are fetching data for you...<br>Please, wait...' });
 		}
@@ -781,19 +831,52 @@ smiley360.services.ajax = function (method, params, onCompleted) {
 			if (response == null) {
 				onCompleted(Ext.apply({ success: false }, response));
 				mask = false;
-				delayedUnMask();
+				if (method != 'checkfacebookpermissions') {
+					delayedUnMask()
+				}
+				else Ext.Viewport.setMasked(false);
 			}
 			else if (response.error == 'Error. This method requires authorization') {
 				Ext.Msg.alert('You are not authorized or your session is expired.');
 				smiley360.animateViewLeft('loginview');
 				mask = false;
-				delayedUnMask();
+				if (method != 'checkfacebookpermissions') {
+					delayedUnMask()
+				}
+				else Ext.Viewport.setMasked(false);
 			}
 			else {
 				onCompleted(Ext.apply({ success: (result && !response.error) }, response));
 				mask = false;
-				delayedUnMask();
+				if (method != 'checkfacebookpermissions') {
+					delayedUnMask()
+				}
+				else Ext.Viewport.setMasked(false);
 			}
 		}
 	});
+}
+
+smiley360.services.getDeviceId = function () {
+	var deviceId = smiley360.services.getMemberRecord().get("deviceId");
+	return deviceId;
+}
+
+smiley360.services.getMemberId = function () {
+	var memberId = smiley360.services.getMemberRecord().get("memberId");
+	return memberId;
+}
+
+smiley360.services.getMemberStore = function () {
+	memberStore = Ext.getStore('membersStore');
+	return memberStore;
+}
+
+smiley360.services.getMemberRecord = function () {
+	var st = smiley360.services.getMemberStore();
+	//if (st.getCount() == 0) {
+	//	var record = st.add({ memberId: null, deviceId: null });
+	//	smiley360.services.save();
+	//}
+	return st.getAt(0);
 }

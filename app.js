@@ -14,6 +14,10 @@
 //@require @packageOverrides
 
 //<debug>
+Ext.Loader.setConfig({
+    disableCaching: true
+});
+
 Ext.Loader.setPath({
     'Ext': 'touch/src',
     'Ext.ux': 'src/ux',
@@ -22,6 +26,7 @@ Ext.Loader.setPath({
 //</debug>
 
 Ext.application({
+    phoneStartupScreen: 'resources/images/loadingimage_x1_iphone',
     name: 'smiley360',
     requires: [
         'Ext.Anim',
@@ -30,9 +35,9 @@ Ext.application({
         'Ext.data.Validations',
         'smiley360.model.SignupModel',
     ],
-    stores: ['Members'],
-    models: ['Member'],
-    controllers: ['Index'],
+    stores: ['Members', 'ShareTools'],
+    models: ['Member', 'ShareTool'],
+    controllers: ['Index', 'Share'],
     views: [
         'Login',
         'Main',
@@ -90,19 +95,23 @@ Ext.application({
         '1496x2048': 'resources/startup/1496x2048.png'
     },
 
-    launch: function () {
+    launch: function ()
+    {
         console.log('App -> launched!');
 
         // Initialize global variable
         _App = this;
     },
 
-    onUpdated: function () {
+    onUpdated: function ()
+    {
         Ext.Msg.confirm(
             "Application Update",
             "This application has just successfully been updated to the latest version. Reload now?",
-            function (buttonId) {
-                if (buttonId === 'yes') {
+            function (buttonId)
+            {
+                if (buttonId === 'yes')
+                {
                     window.location.reload();
                 }
             }

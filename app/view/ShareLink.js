@@ -7,6 +7,7 @@
         fullscreen: true,
         hideOnMaskTap: true,
         id: 'xView',
+        btn_from: {},
         scrollable: 'vertical',
         cls: 'popup-panel',
         items: [{
@@ -46,11 +47,12 @@
                 items: [{
                     xtype: 'label',
                     cls: 'popup-top-text',
-                    html: 'Copy the following link',
+                    html: 'Copy the following link and paste anywhere on the internet',
                 }, {
                     xtype: 'textfield',
                     id: 'xLinkField',
                     cls: 'cust-input',
+					style: 'font-size: 0.7em;',
                     value: '',
                 }]
             }, {
@@ -58,7 +60,7 @@
                 cls: 'popup-button-panel',
                 items: [{
                     xtype: 'button',
-                    text: 'COPY',
+                    text: 'DONE',
                     icon: 'resources/images/share-copy.png',
                     iconAlign: 'right',
                     iconCls: 'popup-post-icon',
@@ -77,8 +79,8 @@
 
                 var xLinkField = this.down('#xLinkField');
 
-                xLinkField.focus();
-                xLinkField.select();
+                //xLinkField.focus();
+                //xLinkField.select();
             },
             hide: function () {
                 this.destroy();
@@ -95,5 +97,13 @@
     {
     	var xLinkField = this.down('#xLinkField');
     	xLinkField.setValue(link_to_set);
+    	
+    	xLinkField.focus();
+    	xLinkField.select();
+    	
+    	//xLinkField.click(); //android
+    	    	
+    	
+    	
     }
 });

@@ -82,7 +82,7 @@
 				ui: 'plain',
 				listeners: {
 					tap: function () {
-					    smiley360.animateViewLeft('tutorialiew');
+						smiley360.animateViewLeft('tutorialiew');
 					}
 				}
 			}, {
@@ -106,16 +106,11 @@
 				cls: 'listmenuitem',
 				ui: 'plain',
 				listeners: {
-				    tap: function () {
-				        Ext.getCmp('xMainView').hideSidePanel();
+					tap: function () {
+						Ext.getCmp('xMainView').hideSidePanel();
 
-				        var members = Ext.getStore('membersStore');
-				        if (members.getCount() > 0) {
-				            members.getAt(0).data.memberId = null;
-				            members.sync();
-                        }
-
-					    smiley360.animateViewLeft('loginview');
+						Ext.getCmp('xSideMenu').fireEvent('updateDeviceId');
+						smiley360.animateViewLeft('loginview');
 					}
 				}
 			}],

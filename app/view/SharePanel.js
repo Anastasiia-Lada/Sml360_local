@@ -7,10 +7,15 @@
 		layout: 'fit',
 		html: '<div id="xShareButtons" align="center"></div>'
 	},
+	listeners: {
+		painted: function () {
 
+		}
+	},
 	missionDetails: {},
 
 	setShareButtons: function (missionDetails) {
+		console.log(missionDetails.valueOf());
 		this.missionDetails = missionDetails;
 
 		var xShareButtons = Ext.get('xShareButtons');
@@ -68,7 +73,7 @@
 				divTag.style.width = '90px';
 				divTag.style.height = '90px';
 				divTag.style.padding = '2px';
-				divTag.style.display = 'inline-table';
+				divTag.style.display = 'inline-block';
 				divTag.setAttribute("align", "left");
 
 				oneButton.renderTo(divTag);
@@ -79,7 +84,6 @@
 
 	createShareButton: function (shareItem, buttonCls, shareViewAlias) {
 		var me = this;
-
 		return new Ext.ux.ShareButton(
             {
             	cls: buttonCls,
@@ -88,31 +92,73 @@
             	smilesCurrent: shareItem.sharingTool_perShare_smiles,
             	listeners: {
             		tap: function () {
-            			if ((shareViewAlias == 'sharetofacebookview' && (!smiley360.memberData.Profile.fbtoken || smiley360.memberData.Profile.fbtoken == ""))
-							|| (shareViewAlias == 'sharetotwitterview' && (!smiley360.memberData.Profile.twitter_token || smiley360.memberData.Profile.twitter_token == ""))) {
-            				
-            				var shareView = Ext.widget('connectpopupview').show();
-            				if (shareView.setToolName)
-            					if (shareViewAlias == 'sharetofacebookview')
-            						shareView.setToolName('Facebook')
-            					else shareView.setToolName('Twitter');
-            			}
+            			var me_tmp = this;
+            			if (true/*parseInt(this.getSmilesDone()) < parseInt(this.getSmilesTotal())*/) {
+            				if ((shareViewAlias == 'sharetofacebookview' && (!smiley360.memberData.Profile.facebookID || smiley360.memberData.Profile.facebookID == "" || !smiley360.permissionsList.publish_stream))
+							|| (shareViewAlias == 'sharetotwitterview' && (!smiley360.memberData.Profile.twitter_token || smiley360.memberData.Profile.twitter_token == ""))
+							|| (shareViewAlias == 'uploadphotoview' && (!smiley360.memberData.Profile.twitter_token || smiley360.memberData.Profile.twitter_token == ""
+							|| !smiley360.memberData.Profile.facebookID || smiley360.memberData.Profile.facebookID == "" || !smiley360.permissionsList.publish_stream)
+								)) {
 
+            					if (shareViewAlias == 'uploadphotoview') {
+            						Ext.getCmp('xDetailsView').fireEvent('goSetSharingInfo', this, me.missionDetails.MissionId, smiley360.memberData.UserId, shareItem.sharingTool_typeID, 'uploadphotoview');
+
+            						var saved_smilesCurrent = this.getSmilesCurrent();
+
+            						var saved_missionId = me.missionDetails.MissionId;
+
+            						var saved_button = me_tmp;
+
+            						var shareView = Ext.widget('connectpopupview').show();
+            						shareView.config.saved_smilesCurrent = saved_smilesCurrent;
+            						shareView.config.saved_missionId = saved_missionId;
+            						shareView.config.saved_button = saved_button;
+
+            						if (shareView.setText)
+            							shareView.setText('Connect to Facebook and Twitter!', 'You can use the Facebook and Twitter<br> sharing tools to connect so you can<br> upload photos to both social<br> networks!', 'OK');
+            					}
+            					else {
+            						var shareView = Ext.widget('connectpopupview').show();
+            						if (shareView.setToolName)
+            							if (shareViewAlias == 'sharetofacebookview') {
+            								shareView.setToolName('Facebook');
+            							}
+            							else {
+            								shareView.setToolName('Twitter');
+            							};
+            					};
+            				}
+
+            				else {
+            					var shareView = Ext.widget(shareViewAlias).show();
+
+            					Ext.getCmp('xDetailsView').fireEvent('goSetSharingInfo', this, me.missionDetails.MissionId, smiley360.memberData.UserId, shareItem.sharingTool_typeID, shareView);
+
+            					if (shareView.config.btn_from)
+            						shareView.config.btn_from = this;
+
+            					//console.log('shbtn' + shareView.config.btn_from);
+
+            					if (shareView.setEarnSmiles)
+            						shareView.setEarnSmiles(this.getSmilesCurrent());
+
+            					if (shareView.setMissionId)
+            						shareView.setMissionId(me.missionDetails.MissionId);
+
+            					if (shareViewAlias == 'reviewforfenderview')
+            						Ext.getCmp('xDetailsView').fireEvent('onShareConnectTapCommand', 'Share', smiley360.memberData.UserId, shareItem.currentBrand, shareItem.currentBrandId);
+            				}
+            			}
             			else {
-            				var shareView = Ext.widget(shareViewAlias).show();
-            				Ext.getCmp('xDetailsView').fireEvent('goSetSharingInfo', this, me.missionDetails.MissionId, smiley360.memberData.UserId, shareItem.sharingTool_typeID, shareView);
-
-            				if (shareView.setEarnSmiles)
-            					shareView.setEarnSmiles(this.getSmilesCurrent());
-
-            				if (shareView.setMissionId)
-            					shareView.setMissionId(me.missionDetails.MissionId);
-
-            				if (shareViewAlias == 'reviewforfenderview')
-            					Ext.getCmp('xDetailsView').fireEvent('onShareConnectTapCommand', 'Share', smiley360.memberData.UserId, shareItem.currentBrand, shareItem.currentBrandId);
-            			}
+            				var shareView = Ext.widget('missioncomletedview').show();
+            				if (shareView.setMissionName && Ext.getCmp('xDetailsTitleLabel'))
+            					shareView.setMissionName(Ext.getCmp('xDetailsTitleLabel').getHtml());
+            			};
             		}
             	}
+
             });
-	}
+	},
+
+
 });

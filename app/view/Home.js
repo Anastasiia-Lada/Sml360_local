@@ -1,5 +1,5 @@
 var counter = 0;
-
+var compareTo;
 Ext.define('smiley360.view.Home', {
 	extend: 'Ext.Panel',
 	alias: 'widget.homeview',
@@ -10,7 +10,7 @@ Ext.define('smiley360.view.Home', {
 	],
 	config: {
 		id: 'xHomeView',
-		title: 'HOME',
+		title: 'HOME',		
 		items: [{
 			xtype: 'container',
 			id: 'home-left',
@@ -86,33 +86,47 @@ Ext.define('smiley360.view.Home', {
 						height: 130,
 						listeners: {
 							painted:
-                                function (carousel) {
-                                	me = Ext.getCmp('xSpecialOffersList');
+							//	function () {
 
-                                	carousel.pageTurner = new Ext.util.DelayedTask(
-                                        function () {
-                                        	//alert('fr' + Ext.getCmp('xSpecialOffersList').getActiveIndex());
-                                        	if (Ext.getCmp('xSpecialOffersList').getActiveIndex() == Ext.getCmp('xSpecialOffersList').items.length - 1) {
-                                        		//alert('next page');
-                                        		if (Ext.getCmp('SpCont0')) {
-                                        			//console.log(Ext.getCmp('SpCont0').valueOf());
-                                        			//Ext.getCmp('xFeaturedList').setActiveItem(Ext.getCmp('SpCont0'));
-                                        			//alert(Ext.getCmp('xSpecialOffersList').getActiveIndex());
-                                        		}
-                                        	}
-                                        	else {
-                                        		Ext.getCmp('xSpecialOffersList').next();
-                                        	}
-                                        	//console.log(me.pageTurner.valueOf());
-                                        	//me.pageTurner.delay(3000); //comment this to avoid js-bug
-                                        }, carousel);
+							//	var carousel = Ext.getCmp('xSpecialOffersList');
 
-                                	carousel.pageTurner.delay(3000);
-                                },
-							activeitemchange: function () {
+							//	Ext.Function.defer(function () {
+							//			carousel.next(this, { type: 'slide', direction: 'right' });
+							//	}, 3000);
+							//},
+							//activeitemchange: function () {
+							//	var carousel = Ext.getCmp('xSpecialOffersList');
+							//	compareTo = parseInt(Ext.getCmp('xSpecialOffersList').getItemLength() - 1);
 
-							}
+							//	if (Ext.getCmp('xSpecialOffersList').getActiveIndex() == compareTo) {
+
+							//		var first_cr = carousel.getAt(0);
+							//		Ext.Function.defer(function () {
+							//			carousel.setActiveItem(first_cr, { type: 'slide', direction: 'right' });
+							//		}, 3000);
+							//	}
+							//	else {
+							//		Ext.Function.defer(function () {
+							//			carousel.next(this, { type: 'slide', direction: 'right' });
+							//		}, 3000);
+							//	}
+								function (carousel) {
+									carousel.pageTurner = new Ext.util.DelayedTask(function () {
+										if (Ext.getCmp('xSpecialOffersList').getActiveIndex() == Ext.getCmp('xSpecialOffersList').items.length - 1) {
+											Ext.getCmp('xSpecialOffersList').setActiveItem(0, 'slide');
+										}
+										else {
+											Ext.getCmp('xSpecialOffersList').next();
+										}
+
+										Ext.getCmp('xSpecialOffersList').pageTurner.delay(3000);
+									}, carousel);
+									carousel.pageTurner.delay(3000);
+
+								},
+
 						},
+
 					}, {
 						xtype: 'button',
 						cls: 'specialoffers-left-btn',
@@ -227,45 +241,60 @@ Ext.define('smiley360.view.Home', {
 				myLink: oneItem.link,
 				listeners: {
 					element: 'element',
-					tap: function () {						
-						if (this.config.myLink != "") {
-							//try {
-							Ext.device.Device.openURL(this.config.myLink);
-							//}
-							//catch (err) {
-							//	window.open(this.Mylink, '_blank');
-							//}
-						}//Ext.device.Device.openURL(oneItem.link);//window.open(oneItem.link)
-						else {
-							Ext.getCmp('xConnectView').fireEvent('onBrandTapCommand', this, smiley360.memberData.UserId, this.getId().substr(6), 0, 100);
-						}
-					}
-				}
-			});
-			console.log(oneItemContainer.valueOf());
-			var incLabel = oneItemContainer.add(new Ext.Label({
-				width: '55%',
-				style: 'font-size: 1.1em; font-family: \'din medium\';padding-right: 10px;',
-				html: oneItem.desc, //'Description goes here lorem ipsum.',
-				//Mylink: oneItem.link,
-				listeners: {
-					//element: 'element',
-					//tap: function () {
-					//	if (this.Mylink != '') alert(this.Mylink);//
-					//	else { this.up('#xHomeView').fireEvent('onBrandTapCommand', this, smiley360.memberData.UserId, this.getId().substr(5), 0, 100); };
-					//}
-				}
-			}));
-			var incImg = oneItemContainer.add(new Ext.Img({
-				src: smiley360.configuration.getResourceDomain() + '/' + oneItem.brandImage,//'resources/images/offers_logo3.png',
-				width: 100,
-				height: 100,
-				cls: 'has-shadow',
-				style: 'background-color: white; border-radius: 5px; border-style: solid; border-width: 1px; border-color: white;',
-			}));
-			counter += 1;
-			xSpecialOffersList.add(oneItemContainer);
-		};
+					tap: function () {
+						if (this.config.myLink && this.config.myLink != "") {
+							
+							window.open(this.config.myLink, '_blank', 'location=yes');
+							////if (app.isAndroid()) {
+							////	navigator.app.loadUrl(this.config.myLink);
+							////} else {
+							////	window.location.href = this.config.myLink;
+							////};
+						//try {
+						//	Ext.device.Device.openURL(this.config.myLink);
+						//}
+						//catch (err) {
 
-	},
+						//	try {
+						//		window.open(this.config.myLink, '_system');
+						//	}
+
+						//	catch (err1) {
+						//		navigator.app.loadUrl(this.config.myLink, { openExternal: true });
+						//	}
+						//window.open(this.config.Mylink, '_blank');
+					
+		}//Ext.device.Device.openURL(oneItem.link);//window.open(oneItem.link)
+	else {
+							Ext.getCmp('xConnectView').fireEvent('onBrandTapCommand', this, smiley360.memberData.UserId, this.getId().substr(6), 0, 100);
+	}
+}
+}
+});
+console.log(oneItemContainer.valueOf());
+var incLabel = oneItemContainer.add(new Ext.Label({
+	width: '55%',
+	style: 'font-size: 1.1em; font-family: \'din medium\';padding-right: 10px;',
+	html: oneItem.desc, //'Description goes here lorem ipsum.',
+	//Mylink: oneItem.link,
+	listeners: {
+		//element: 'element',
+		//tap: function () {
+		//	if (this.Mylink != '') alert(this.Mylink);//
+		//	else { this.up('#xHomeView').fireEvent('onBrandTapCommand', this, smiley360.memberData.UserId, this.getId().substr(5), 0, 100); };
+		//}
+	}
+}));
+var incImg = oneItemContainer.add(new Ext.Img({
+	src: smiley360.configuration.getResourceDomain() + '/' + oneItem.brandImage,//'resources/images/offers_logo3.png',
+	width: 100,
+	height: 100,
+	cls: 'has-shadow',
+	style: 'background-color: white; border-radius: 5px; border-style: solid; border-width: 1px; border-color: white;',
+}));
+counter += 1;
+xSpecialOffersList.add(oneItemContainer);
+};
+
+},
 });
