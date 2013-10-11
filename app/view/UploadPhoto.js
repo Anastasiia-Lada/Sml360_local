@@ -441,7 +441,7 @@ Ext.define('smiley360.view.UploadPhoto', {
     },
     doValidation: function ()
     {
-        alert('validate');
+        //alert('validate');
         var msg = '';
             if (!photoAdded)
             {
