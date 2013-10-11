@@ -449,6 +449,18 @@ Ext.define('smiley360.view.UploadPhoto', {
     },
     doValidation: function ()
     {
+        var msg = '';
+            if (!photoAdded)
+            {
+                this.down('#xBrowsePhotoButton').setCls('popup-photo-button-required has-shadow');
+                msg += 'Please, select some photo. ';
+            }
+            if (!his.down('#xTwitterCheckbox').getChecked() && his.down('#xFacebookCheckbox').getChecked())
+                msg += 'Please, select one or more post methods. ';
+            if (this.down('#xPostText').getValue().length < this.down('#xCharacterMaximum').config.xMax)
+                msg += 'Post text, can`t be longer than ' + this.down('#xCharacterMaximum').config.xMax + ' symbols';
+            Ext.Msg.alert('Error', msg);
+
         if (this.down('#xPostText').getValue().length < this.down('#xCharacterMaximum').config.xMax && ((this.down('#xFacebookCheckbox').getChecked() == true) || (this.down('#xTwitterCheckbox').getChecked() == true)) && photoAdded)
         {
             if (photoAdded)
