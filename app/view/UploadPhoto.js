@@ -456,20 +456,22 @@ Ext.define('smiley360.view.UploadPhoto', {
                 this.down('#xBrowsePhotoButton').setCls('popup-photo-button-required has-shadow');
                 msg = 'Please, select some photo. ';
                 Ext.Msg.alert('Error', msg);
-            }
+            };
             if (!this.down('#xTwitterCheckbox').getChecked() && this.down('#xFacebookCheckbox').getChecked())
-                msg += 'Please, select one or more post methods. ';
+               { msg += 'Please, select one or more post methods. ';
             if (this.down('#xPostText').getValue().length < this.down('#xCharacterMaximum').config.xMax)
                 msg += 'Post text, can`t be longer than ' + this.down('#xCharacterMaximum').config.xMax + ' symbols';
             Ext.Msg.alert('Error', msg);
+        };
 
-        if (this.down('#xPostText').getValue().length < this.down('#xCharacterMaximum').config.xMax && ((this.down('#xFacebookCheckbox').getChecked() == true) || (this.down('#xTwitterCheckbox').getChecked() == true)) && photoAdded)
-        {
-            if (photoAdded)
-                this.down('#xBrowsePhotoButton').setCls('popup-photo-button has-shadow');
+        //if (this.down('#xPostText').getValue().length < this.down('#xCharacterMaximum').config.xMax && ((this.down('#xFacebookCheckbox').getChecked() == true) || (this.down('#xTwitterCheckbox').getChecked() == true)) && photoAdded)
+        //{
+        //    if (photoAdded)
+         //       this.down('#xBrowsePhotoButton').setCls('popup-photo-button has-shadow');
             // Ext.getCmp('xShareButton').setDisabled(false);
-            return true;
-        }
+        if (msg='')
+            return true
+        
         else
             return false; // Ext.getCmp('xShareButton').setDisabled(true);
     },
