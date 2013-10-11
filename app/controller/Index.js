@@ -144,7 +144,7 @@ Ext.define('smiley360.controller.Index', {
 									me.loadProfileDropdowns(function () {
 										if (tmp_params.facebookID != '') {
 											smiley360.services.loginToServer(tmp_params, function (fb_session) {
-												alert('doneLoginToserver');												
+												//alert('doneLoginToserver');												
 												me.tryLoginUser();
 											});
 										}
@@ -1048,7 +1048,7 @@ Ext.define('smiley360.controller.Index', {
 				tmp_params.facebookID = '';
 				tmp_params.token = '';
 			if (memberId) {
-				alert('Index -> [tryLoginUser] with stored memberId:' + memberId);
+				console.log('Index -> [tryLoginUser] with stored memberId:' + memberId);
 
 				me.loadMemberData(memberId, function () {
 					smiley360.animateViewLeft('mainview');
@@ -1080,12 +1080,12 @@ Ext.define('smiley360.controller.Index', {
 			}
 			else if (deviceId ) {
 				var me = this;				
-				alert('Index -> [tryLoginUser] with cached deviceId:' + deviceId);
+				console.log('Index -> [tryLoginUser] with cached deviceId:' + deviceId);
 
 				smiley360.services.getMemberIdByDeviceId(deviceId,
 					function (response) {
 						if (response.success) {
-							alert('Index -> [tryLoginUser] with received memberId:' + response.ID);
+							console.log('Index -> [tryLoginUser] with received memberId:' + response.ID);
 
 							me.updateMemberId(response.ID);
 							me.loadMemberData(response.ID, function () {
