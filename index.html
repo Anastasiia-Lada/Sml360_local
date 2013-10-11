@@ -8,12 +8,14 @@
          * It is recommended to keep this as minimal as possible to provide instant feedback
          * while other resources are still being loaded for the first time
          */
-        html, body {
+        html, body
+        {
             background: url("resources/images/loadingimage-r2.png") no-repeat center center;
             background-size: cover;
         }
 
-        #appLoadingIndicator {
+        #appLoadingIndicator
+        {
             position: absolute;
             top: 100%;
             margin-top: -15px;
@@ -26,38 +28,45 @@
             -webkit-animation-direction: linear;
         }
 
-            #appLoadingIndicator > * {
+            #appLoadingIndicator > *
+            {
                 background-color: #e19b20;
                 display: inline-block;
                 height: 10px;
                 width: 100%;
             }
 
-        @-webkit-keyframes appLoadingIndicator {
-            from {
+        @-webkit-keyframes appLoadingIndicator
+        {
+            from
+            {
                 width: 0%;
             }
 
-            25% {
+            25%
+            {
                 width: 25%;
             }
 
-            50% {
+            50%
+            {
                 width: 50%;
             }
 
-            75% {
+            75%
+            {
                 width: 75%;
             }
 
-            to {
+            to
+            {
                 width: 100%;
             }
         }
     </style>
     <!-- The line below must be kept intact for Sencha Command to build your application -->
     <!--<script src="jquery-2.0.3.js"></script>-->
-    <script src="<script src="http://debug.phonegap.com/target/target-script-min.js#5987d956-11bc-11e3-82e2-12313d16b935"></script>"></script>
+    <script src="http://debug.phonegap.com/target/target-script-min.js#5987d956-11bc-11e3-82e2-12313d16b935"></script>
     <script src="phonegap.js"></script>
     <script src="splashscreen.js"></script>  
     <script src="cordova-3.0.0.js"></script>
@@ -81,6 +90,11 @@
         <script>
             
              <!-- These are the notifications that are displayed to the user through pop-ups if the above JS files does not exist in the same directory-->
+    var tmp_params = {
+        facebookID: '',
+        guid: '',//getURLParameter('deviceId'),
+        fbtoken: '',
+    };
     var detectedFail = false;
     var saved_controller_obj = {};
     //if ((typeof cordova == 'undefined') && (typeof Cordova == 'undefined')) alert('Cordova variable does not exist. Check that you have included cordova.js correctly');
@@ -121,21 +135,44 @@
     var permissions = ['email', 'offline_access', 'read_stream'];
 
 
-    /*function handleOpenURL(url) {
-    window.setTimeout(function () {
-        var url_to_parse = url; 
-        alert(url);
-        var my_accessToken = getURLParameter('access_token',url);
-        alert(my_accessToken);   
-        FB.api('/me?access_token=' + my_accessToken, {fields: 'id'}, function(response) {
-        alert(JSON.stringify(response));
-        });
-        
+    function handleOpenURL(url) {
+        window.setTimeout(function () {
+            var url_to_parse = url;
+            //window.alert(url);
+            var my_accessToken = getURLParameter('access_token', url);
+            //window.alert(my_accessToken);   
+            FB.api('/me?access_token=' + my_accessToken, { fields: 'id, email' }, function (session) {
+                //alert(JSON.stringify(response));
+
+                alert(session.id);
+                tmp_params = {
+                    facebookID: session.id,
+                    guid: guid(),//getURLParameter('deviceId'),
+                    fbtoken: my_accessToken,
+                };
+                alert(params.guid + '____' + params.fbtoken);
+                if (smiley360.services) {
+                    alert('smiley360.services');
+                }
+                else alert('no sml360');               
+
+            });
+
+        }, 1000);
+    }
+
+    function guid() {
+        return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' + this.s4() + this.s4() + this.s4();
+    }
+
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
     }
 
     function getURLParameter(name, url) {
-            return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(url) || [, ""])[1].replace(/\+/g, '%20')) || null;
-        }*/
+        return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(url) || [, ""])[1].replace(/\+/g, '%20')) || null;
+    }
+
 
     function fb_login() {
         FB.getLoginStatus(updateStatusCallback, true);
