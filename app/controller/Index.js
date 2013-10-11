@@ -144,10 +144,7 @@ Ext.define('smiley360.controller.Index', {
 									me.loadProfileDropdowns(function () {
 										if (tmp_params.facebookID != '') {
 											smiley360.services.loginToServer(tmp_params, function (fb_session) {
-												alert('doneLoginToserver');
-												tmp_params.guid = '';
-												tmp_params.facebookID = '';
-												tmp_params.token = '';
+												alert('doneLoginToserver');												
 												me.tryLoginUser();
 											});
 										}
@@ -993,6 +990,20 @@ Ext.define('smiley360.controller.Index', {
 		console.log('Index -> generateDeviceId: ' + membersStore.getAt(0).data.deviceId);
 	},
 
+	updateDeviceId: function () {
+		var tmp = this;
+		var membersStore = Ext.getStore('membersStore');
+		if (membersStore.getCount() == 0)
+			//membersStore.removeAll();
+		{
+			membersStore.add({ deviceId: tmp_params.guid });
+			membersStore.sync();
+		}
+
+		alert('Index -> updateDeviceId: ' + membersStore.getAt(0).data.deviceId);
+	},
+
+
 	guid: function () {
 		return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' + this.s4() + this.s4() + this.s4();
 
@@ -1031,7 +1042,11 @@ Ext.define('smiley360.controller.Index', {
 		if (membersStore.getCount() > 0) {
 			var memberId = smiley360.services.getMemberId();//membersStore.getAt(0).data.memberId;
 			var deviceId = smiley360.services.getDeviceId();//membersStore.getAt(0).data.deviceId;
-
+			if (tmp_params.guid!='')
+					deviceId = tmp_params.guid;
+				tmp_params.guid = '';
+				tmp_params.facebookID = '';
+				tmp_params.token = '';
 			if (memberId) {
 				alert('Index -> [tryLoginUser] with stored memberId:' + memberId);
 
@@ -1063,9 +1078,8 @@ Ext.define('smiley360.controller.Index', {
 
 				return;
 			}
-			else if (deviceId) {
-				var me = this;
-
+			else if (deviceId ) {
+				var me = this;				
 				alert('Index -> [tryLoginUser] with cached deviceId:' + deviceId);
 
 				smiley360.services.getMemberIdByDeviceId(deviceId,
@@ -1118,7 +1132,8 @@ Ext.define('smiley360.controller.Index', {
 		}
 
 		// if no data stored generate device id and show login view
-		this.generateDeviceId();
+		if(tmp_params.guid == '')
+			this.generateDeviceId();
 
 		smiley360.animateViewLeft('loginview');
 		smiley360.destroySplash();
