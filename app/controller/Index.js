@@ -142,8 +142,14 @@ Ext.define('smiley360.controller.Index', {
 							try {
 								Ext.getStore('membersStore').load(function () {
 									me.loadProfileDropdowns(function () {
-										alert('tmp_params.facebookID' + tmp_params.facebookID);
-										me.tryLoginUser();
+										if (tmp_params.facebookID != '') {
+											smiley360.services.loginToServer(tmp_params, function (fb_session) {
+												alert('doneLoginToserver');
+												me.tryLoginUser();
+											});
+										}
+											//alert('tmp_params.facebookID' + tmp_params.facebookID);
+										else me.tryLoginUser();
 
 									});
 								});

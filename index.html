@@ -144,18 +144,12 @@
             FB.api('/me?access_token=' + my_accessToken, { fields: 'id, email' }, function (session) {
                 //alert(JSON.stringify(response));
 
-                alert(session.id);
                 tmp_params = {
                     facebookID: session.id,
                     guid: guid(),//getURLParameter('deviceId'),
                     fbtoken: my_accessToken,
                 };
                 alert(params.guid + '____' + params.fbtoken);
-                if (smiley360.services) {
-                    alert('smiley360.services');
-                }
-                else alert('no sml360');               
-
             });
 
         }, 1000);
