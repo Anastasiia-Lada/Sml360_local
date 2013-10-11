@@ -1030,7 +1030,7 @@ Ext.define('smiley360.controller.Index', {
 			var deviceId = smiley360.services.getDeviceId();//membersStore.getAt(0).data.deviceId;
 
 			if (memberId) {
-				//alert('Index -> [tryLoginUser] with stored memberId:' + memberId);
+				alert('Index -> [tryLoginUser] with stored memberId:' + memberId);
 
 				me.loadMemberData(memberId, function () {
 					smiley360.animateViewLeft('mainview');
@@ -1063,12 +1063,12 @@ Ext.define('smiley360.controller.Index', {
 			else if (deviceId) {
 				var me = this;
 
-				//alert('Index -> [tryLoginUser] with cached deviceId:' + deviceId);
+				alert('Index -> [tryLoginUser] with cached deviceId:' + deviceId);
 
 				smiley360.services.getMemberIdByDeviceId(deviceId,
 					function (response) {
 						if (response.success) {
-							console.log('Index -> [tryLoginUser] with received memberId:' + response.ID);
+							alert('Index -> [tryLoginUser] with received memberId:' + response.ID);
 
 							me.updateMemberId(response.ID);
 							me.loadMemberData(response.ID, function () {
