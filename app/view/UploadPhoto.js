@@ -8,7 +8,7 @@ Ext.define('smiley360.view.UploadPhoto', {
         'Ext.Anim',
         'Ext.Rating',
         'Ext.ux.Fileup',
-        'Ext.Function'
+		'Ext.Function'
     ],
     config: {
         modal: true,
@@ -79,6 +79,7 @@ Ext.define('smiley360.view.UploadPhoto', {
                                         {
                                             xtype: 'fileupload',
                                             autoUpload: true,
+                                            name: 'xBrowsePhotoButton',
                                             cls: 'popup-photo-button has-shadow',
                                             states:
                                             {
@@ -90,24 +91,15 @@ Ext.define('smiley360.view.UploadPhoto', {
                                                     loading: true// Enable loading spinner on button
                                                 }
                                             },
-                                            listeners:
+                                            successHandler: function (response)
                                             {
-                                                /* painted: function (me)
-                                                 {
-                                                     this.fireEvent('share.command', 'share.upload', this);
-                                                     me.reset();
-                                                 },*/
-                                                success: function (response)
-                                                {
-                                                    this.hide();
-                                                    photoAdded = true;
-                                                    this.up('#xView').config.imageID = response.imageID;
-                                                    this.up('#xView').down('#xShareButton').enable();
-                                                },
-                                                failure: function (error, response)
-                                                {
-                                                    Ext.Msg.alert(error, response.message);
-                                                }
+                                                photoAdded = true;
+                                                this.up('#xView').config.imageID = response.imageID;
+                                                this.up('#xView').down('#xShareButton').enable();
+                                            },
+                                            failureHandler: function (error, response)
+                                            {
+                                                Ext.Msg.alert(error, response.message);
                                             }
                                         },
                                         {
@@ -261,60 +253,7 @@ Ext.define('smiley360.view.UploadPhoto', {
                 this.destroy();
             },
             painted: function ()
-            {/*
-                uploader = new plupload.Uploader({
-                    runtimes: 'html5,flash,silverlight,html4',
-                    browse_button: 'pickfiles', // you can pass in id...
-                    container: document.getElementById('container'), // ... or DOM Element itself
-                    url: 'upload.php',
-                    flash_swf_url: '../js/Moxie.swf',
-                    silverlight_xap_url: '../js/Moxie.xap',
-                    resize: { width: 100, height: 100, quality: 90 },
-
-
-                    filters: {
-                        max_file_size: '10mb',
-                        mime_types: [
-                            { title: "Image files", extensions: "jpg,gif,png" },
-                            { title: "Zip files", extensions: "zip" }
-                        ]
-                    },
-
-                    init: {
-                        PostInit: function ()
-                        {
-                            document.getElementById('filelist').innerHTML = '';
-
-                            document.getElementById('uploadfiles').onclick = function ()
-                            {
-                                uploader.start();
-                                return false;
-                            };
-                        },
-
-                        FilesAdded: function (up, files)
-                        {
-                            files = ////chosen file
-                            plupload.each(files, function (file)
-                            {
-                                document.getElementById('filelist').innerHTML += '<div id="' + file.id + '">' + file.name + ' (' + plupload.formatSize(file.size) + ') <b></b></div>';
-                            });
-                        },
-
-                        UploadProgress: function (up, file)
-                        {
-                            document.getElementById(file.id).getElementsByTagName('b')[0].innerHTML = '<span>' + file.percent + "%</span>";
-                        },
-
-                        Error: function (up, err)
-                        {
-                            document.getElementById('console').innerHTML += "\nError #" + err.code + ": " + err.message;
-                        }
-                    }
-                });
-
-                uploader.init();
-                */
+            {
                 smiley360.failedShares = [];
                 photoAdded = false;
                 //var fileName = smiley360.services.guid();
@@ -339,7 +278,7 @@ Ext.define('smiley360.view.UploadPhoto', {
 
     onCheck: function ()
     {
-        this.down('#xBrowsePhotoButton').setCls('popup-photo-button has-shadow');
+        this.down('[name=xBrowsePhotoButton]').setCls('popup-photo-button has-shadow');
         this.down('#xFacebookCheckbox').setLabelCls('popup-checkbox-grey-label');
         this.down('#xTwitterCheckbox').setLabelCls('popup-checkbox-grey-label');
         if (Ext.getCmp('xView')) Ext.getCmp('xView').doValidation();
@@ -362,9 +301,7 @@ Ext.define('smiley360.view.UploadPhoto', {
 
     doShare: function ()
     {
-        Ext.getCmp('xView').doValidation();
         if (Ext.getCmp('xView').doValidation())
-        //if (Ext.getCmp('xView').doValidation())
         {
             var shareView = this;
             var shareOptions = [];
@@ -418,13 +355,29 @@ Ext.define('smiley360.view.UploadPhoto', {
                 });
             };
 
-            //if (Ext.getCmp('xView'))
-            //    Ext.getCmp('xView').doValidation();
+            if (Ext.getCmp('xView'))
+                Ext.getCmp('xView').doValidation();
         }
-        //else
-        //{
-           
-        //}
+        else
+        {
+            var msg = '';
+            if (!photoAdded)
+            {
+                if (this.down('[name=xBrowsePhotoButton]'))
+                    this.down('[name=xBrowsePhotoButton]').setCls('popup-photo-button-required has-shadow');
+                msg += 'Please, select some photo. ';
+            }
+            if (((!this.down('#xFacebookCheckbox').getChecked() && !this.down('#xFacebookCheckbox').isHidden())
+                    && (!this.down('#xTwitterCheckbox').getChecked() && !this.down('#xTwitterCheckbox').isHidden()))
+                || (this.down('#xFacebookCheckbox').isHidden() && (!this.down('#xTwitterCheckbox').getChecked() && !this.down('#xTwitterCheckbox').isHidden()))
+                || (this.down('#xTwitterCheckbox').isHidden() && (!this.down('#xFacebookCheckbox').getChecked() && !this.down('#xFacebookCheckbox').isHidden())))
+            {
+                msg += 'Please, select one or more post methods. ';
+            }
+            if (this.down('#xPostText').getValue().length > this.down('#xCharacterMaximum').config.xMax)
+                msg += 'Post text, can`t be longer than ' + this.down('#xCharacterMaximum').config.xMax + ' symbols';
+            Ext.Msg.alert('Error', msg);
+        }
     },
 
 
@@ -441,33 +394,20 @@ Ext.define('smiley360.view.UploadPhoto', {
     },
     doValidation: function ()
     {
-        //alert('validate');
-        var msg = '';
-            if (!photoAdded)
-            {
-                this.down('#xBrowsePhotoButton').setCls('popup-photo-button-required has-shadow');
-                msg = 'Please, select some photo. ';
-                Ext.Msg.alert('Error', msg);
-            };
-            if (!this.down('#xTwitterCheckbox').getChecked() && this.down('#xFacebookCheckbox').getChecked())
-               { msg += 'Please, select one or more post methods. ';
-            if (this.down('#xPostText').getValue().length < this.down('#xCharacterMaximum').config.xMax)
-                msg += 'Post text, can`t be longer than ' + this.down('#xCharacterMaximum').config.xMax + ' symbols';
-            Ext.Msg.alert('Error', msg);
-        };
-
-        //if (this.down('#xPostText').getValue().length < this.down('#xCharacterMaximum').config.xMax && ((this.down('#xFacebookCheckbox').getChecked() == true) || (this.down('#xTwitterCheckbox').getChecked() == true)) && photoAdded)
-        //{
-        //    if (photoAdded)
-         //       this.down('#xBrowsePhotoButton').setCls('popup-photo-button has-shadow');
+        if (this.down('#xPostText').getValue().length < this.down('#xCharacterMaximum').config.xMax
+            && !(((!this.down('#xFacebookCheckbox').getChecked() && !this.down('#xFacebookCheckbox').isHidden())
+                    && (!this.down('#xTwitterCheckbox').getChecked() && !this.down('#xTwitterCheckbox').isHidden()))
+                || (this.down('#xFacebookCheckbox').isHidden() && (!this.down('#xTwitterCheckbox').getChecked() && !this.down('#xTwitterCheckbox').isHidden()))
+                || (this.down('#xTwitterCheckbox').isHidden() && (!this.down('#xFacebookCheckbox').getChecked() && !this.down('#xFacebookCheckbox').isHidden())))
+            && photoAdded)
+        {
+            if (photoAdded && this.down('[name=xBrowsePhotoButton]'))
+                this.down('[name=xBrowsePhotoButton]').setCls('popup-photo-button has-shadow');
             // Ext.getCmp('xShareButton').setDisabled(false);
-        if (msg='')
-            {alert('true');
-            return true;}
-        
+            return true;
+        }
         else
-            {alert('false');
-            return false;} // Ext.getCmp('xShareButton').setDisabled(true);
+            return false; // Ext.getCmp('xShareButton').setDisabled(true);
     },
     setCharacterMaximum: function (number)
     {
